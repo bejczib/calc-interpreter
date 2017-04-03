@@ -32,8 +32,7 @@ class Interpreter
     return Token.new(Token::EOF,nil) if (@pos > @text.length - 1)
     case
     when is_digit?(char)
-      token = Token.new(Token::INTEGER, @text[@pos].to_i)
-        @pos += 1
+      token = Token.new(Token::INTEGER, integer)
       return token
     when '+'
       token = Token.new(Token::PLUS, @text[@pos])
@@ -52,4 +51,12 @@ class Interpreter
     char =~ /[[:digit:]]/
   end
 
+  def integer
+    digit = ''
+    while is_digit?(@text[@pos])
+      digit += @text[@pos]
+      @pos +=1
+    end
+    digit.to_i
+  end
 end
