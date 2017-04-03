@@ -8,7 +8,9 @@ describe Interpreter do
   {expression: "12+1",expected: 13},
   {expression: "4+16",expected: 20},
   {expression: "4*2",expected: 8},
-  {expression: "4/2",expected: 2}
+  {expression: "4/2",expected: 2},
+  {expression: "4+2-3",expected: 3},
+  {expression: "4-2+8",expected: 10}
 ].each do |test_case|
     context "when the the expression to eval is #{test_case[:expression]}" do
 

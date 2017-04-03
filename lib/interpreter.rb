@@ -9,19 +9,13 @@ class Interpreter
   end
 
   def evaluate
+    result = ''
     @current_token = get_next_token
-
-    left = @current_token.value
-    @current_token = get_next_token
-
-    operator = @current_token.value
-    @current_token = get_next_token
-
-    right = @current_token.value
-    @current_token = get_next_token
-
-    return eval("#{left}#{operator}#{right}")
-
+    @text.split('').each do |char|
+      result += @current_token.value unless @current_token.value.nil?
+      @current_token = get_next_token
+    end
+    return eval(result)
   end
 
   private
@@ -57,6 +51,6 @@ class Interpreter
       digit += @text[@pos]
       @pos +=1
     end
-    digit.to_i
+    digit
   end
 end
