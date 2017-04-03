@@ -1,0 +1,10 @@
+#!/usr/bin/ruby
+
+require_relative '../lib/interpreter'
+require_relative '../lib/utils'
+
+while true
+  text = Utils.prompt "?> "
+  break if text == "exit"
+  puts Interpreter.new(text).evaluate
+end
