@@ -14,9 +14,10 @@ describe Interpreter do
 ].each do |test_case|
     context "when the the expression to eval is #{test_case[:expression]}" do
 
-      let(:instance) { described_class.new(Lexer.new(test_case[:expression]))}
+      let(:lexer) { Lexer.new(test_case[:expression]) }
+      let(:interpreter) { described_class.new(lexer)}
 
-      subject { instance.evaluate }
+      subject { interpreter.evaluate }
 
       it { is_expected.to eq test_case[:expected] }
     end

@@ -34,6 +34,8 @@ class Lexer
     end
   end
 
+  private
+
   def integer
     digit = ''
     while is_digit?.call(@text[@pos])
