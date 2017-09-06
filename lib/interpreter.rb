@@ -1,5 +1,4 @@
 require_relative './token'
-
 class Interpreter
 
   def initialize(text)
@@ -9,16 +8,37 @@ class Interpreter
   end
 
   def evaluate
-    result = ''
+
     @current_token = get_next_token
-    @text.split('').each do |char|
-      result += @current_token.value unless @current_token.value.nil?
-      @current_token = get_next_token
+
+    result = factor
+    while [Token::MINUS, Token::PLUS].include? @current_token.type
+      if @current_token.type == Token::PLUS
+        eat(Token::PLUS)
+        result += factor
+      elsif @current_token.type == Token::MINUS
+        eat(Token::MINUS)
+        result -= factor
+      end
     end
-    return eval(result)
+    result
   end
 
   private
+
+  def factor
+    token = @current_token
+    eat(Token::INTEGER)
+    token.value.to_i
+  end
+
+  def eat(token_type)
+    if @current_token.type == token_type
+      @current_token = get_next_token
+    else
+      raise "Zsafol..."
+    end
+  end
 
   def get_next_token
     char = @text[@pos]
@@ -28,11 +48,11 @@ class Interpreter
     when is_digit?(char)
       token = Token.new(Token::INTEGER, integer)
       return token
-    when '+'
+    when char ==  '+'
       token = Token.new(Token::PLUS, @text[@pos])
       @pos += 1
       return token
-    when '-'
+    when char == '-'
       token = Token.new(Token::MINUS, @text[@pos])
       @pos += 1
       return token
