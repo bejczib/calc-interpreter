@@ -8,23 +8,35 @@ class Interpreter
   end
 
   def evaluate
-
     @current_token = get_next_token
-
-    result = factor
-    while [Token::MINUS, Token::PLUS].include? @current_token.type
+    result = term
+    while [Token::PLUS, Token::MINUS].include? @current_token.type
       if @current_token.type == Token::PLUS
         eat(Token::PLUS)
-        result += factor
+        result += term
       elsif @current_token.type == Token::MINUS
         eat(Token::MINUS)
-        result -= factor
+        result -= term
       end
     end
     result
   end
 
   private
+
+  def term
+    result = factor
+    while [Token::MUL, Token::DIV].include? @current_token.type
+      if @current_token.type == Token::MUL
+        eat(Token::MUL)
+        result *= factor
+      elsif @current_token.type == Token::DIV
+        eat(Token::DIV)
+        result /= factor
+      end
+    end
+    result
+  end
 
   def factor
     token = @current_token
@@ -54,6 +66,14 @@ class Interpreter
       return token
     when char == '-'
       token = Token.new(Token::MINUS, @text[@pos])
+      @pos += 1
+      return token
+    when char == '*'
+      token = Token.new(Token::MUL, @text[@pos])
+      @pos += 1
+      return token
+    when char == '/'
+      token = Token.new(Token::DIV, @text[@pos])
       @pos += 1
       return token
     else
