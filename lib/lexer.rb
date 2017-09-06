@@ -29,6 +29,14 @@ class Lexer
       token = Token.new(Token::DIV, @text[@pos])
       @pos += 1
       return token
+    when '('
+      token = Token.new(Token::LPAREN, @text[@pos])
+      @pos += 1
+      return token
+    when ')'
+      token = Token.new(Token::RPAREN, @text[@pos])
+      @pos += 1
+      return token
     else
       raise "wtf #{char}"
     end

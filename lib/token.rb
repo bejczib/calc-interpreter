@@ -6,6 +6,8 @@ class Token
   MUL = 'MUL'
   DIV = 'DIV'
   EOF = 'EOF'
+  LPAREN = 'LPAREN'
+  RPAREN = 'RPAREN'
 
   attr_accessor :type, :value
 

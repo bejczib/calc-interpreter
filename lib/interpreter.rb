@@ -40,8 +40,15 @@ class Interpreter
 
   def factor
     token = @current_token
-    eat(Token::INTEGER)
-    token.value.to_i
+    if token.type == Token::INTEGER
+      eat(Token::INTEGER)
+      token.value.to_i
+    else
+      eat(Token::LPAREN)
+      result = evaluate
+      eat(Token::RPAREN)
+      result
+    end
   end
 
   def eat(token_type)
