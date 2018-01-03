@@ -3,9 +3,10 @@
 require_relative '../lib/interpreter'
 require_relative '../lib/lexer'
 require_relative '../lib/utils'
+require_relative '../lib/parser'
 
 while true
   text = Utils.prompt "?> "
   break if text == "exit"
-  puts Interpreter.new(Lexer.new(text)).evaluate
+  puts Interpreter.new(Parser.new(Lexer.new(text))).call
 end

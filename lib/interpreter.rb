@@ -1,61 +1,25 @@
 require_relative './token'
 require_relative './lexer'
+require_relative './nodes'
+require_relative './utils'
 
 class Interpreter
 
-  def initialize(lexer)
-    @lexer = lexer
-    @current_token = @lexer.get_next_token!
+  def initialize(parser)
+    @parser = parser
   end
 
-  def evaluate
-    result = term
-    while [Token::PLUS, Token::MINUS].include? @current_token.type
-      if @current_token.type == Token::PLUS
-        eat(Token::PLUS)
-        result += term
-      elsif @current_token.type == Token::MINUS
-        eat(Token::MINUS)
-        result -= term
-      end
-    end
-    result
+  def call
+    self.class.visit(@parser.parse)
   end
 
   private
 
-  def term
-    result = factor
-    while [Token::MUL, Token::DIV].include? @current_token.type
-      if @current_token.type == Token::MUL
-        eat(Token::MUL)
-        result *= factor
-      elsif @current_token.type == Token::DIV
-        eat(Token::DIV)
-        result /= factor
-      end
-    end
-    result
-  end
-
-  def factor
-    token = @current_token
-    if token.type == Token::INTEGER
-      eat(Token::INTEGER)
-      token.value.to_i
-    else
-      eat(Token::LPAREN)
-      result = evaluate
-      eat(Token::RPAREN)
-      result
-    end
-  end
-
-  def eat(token_type)
-    if @current_token.type == token_type
-      @current_token = @lexer.get_next_token!
-    else
-      raise "Token type: #{token_type} instead of #{@current_token.type}"
+  def self.visit(ast)
+    begin
+      Nodes.const_get(ast.class.to_s).visit(ast)
+    rescue Exception => ex
+      puts ex
     end
   end
 end

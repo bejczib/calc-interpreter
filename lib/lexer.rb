@@ -38,7 +38,7 @@ class Lexer
       @pos += 1
       return token
     else
-      raise "wtf #{char}"
+      puts "wtf #{char}"
     end
   end
 
@@ -46,7 +46,7 @@ class Lexer
 
   def integer
     digit = ''
-    while is_digit?.call(@text[@pos])
+    while is_digit?.call(@text[@pos]) or @text[@pos] == '.'
       digit += @text[@pos]
       @pos +=1
     end
