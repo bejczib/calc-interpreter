@@ -8,13 +8,13 @@ module Nodes
 
   module BinOp
     def self.visit(node)
-      if node.operator.type == Token::PLUS
+      if node.operator.type == :plus
         Interpreter.visit(node.left) + Interpreter.visit(node.right)
-      elsif node.operator.type == Token::MINUS
+      elsif node.operator.type == :minus
         Interpreter.visit(node.left) - Interpreter.visit(node.right)
-      elsif node.operator.type == Token::MUL
+      elsif node.operator.type == :multiplication
         Interpreter.visit(node.left) * Interpreter.visit(node.right)
-      elsif node.operator.type == Token::DIV
+      elsif node.operator.type == :division
         Interpreter.visit(node.left) / Interpreter.visit(node.right).to_f
       end
     end
@@ -22,9 +22,9 @@ module Nodes
 
   module UnaryOp
     def self.visit(node)
-      if node.operator.type == Token::PLUS
+      if node.operator.type == :plus
         +Interpreter.visit(node.expression)
-      elsif node.operator.type == Token::MINUS
+      elsif node.operator.type == :minus
         -Interpreter.visit(node.expression)
       end
     end

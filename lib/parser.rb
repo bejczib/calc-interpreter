@@ -2,7 +2,7 @@ class Parser
 
   def initialize(lexer)
     @lexer = lexer
-    @current_token = @lexer.get_next_token!
+    @current_token = @lexer.advance!
   end
 
   def parse
@@ -13,12 +13,12 @@ class Parser
 
   def expression
     node = term
-    while [Token::PLUS, Token::MINUS].include? @current_token.type
+    while [:plus, :minus].include? @current_token.type
       token = @current_token
-     if token.type == Token::PLUS
-       tokenize(Token::PLUS)
-     elsif token.type == Token::MINUS
-       tokenize(Token::MINUS)
+     if token.type == :plus
+       tokenize(:plus)
+     elsif token.type == :minus
+       tokenize(:minus)
      end
      node = BinOp.new(node, token, term)
     end
@@ -27,12 +27,12 @@ class Parser
 
   def term
     node = factor
-    while [Token::MUL, Token::DIV].include? @current_token.type
+    while [:multiplication, :division].include? @current_token.type
       token = @current_token
-      if token.type == Token::MUL
-        tokenize(Token::MUL)
-      elsif token.type == Token::DIV
-        tokenize(Token::DIV)
+      if token.type == :multiplication
+        tokenize(:multiplication)
+      elsif token.type == :division
+        tokenize(:division)
       end
       node = BinOp.new(node, token, factor)
     end
@@ -41,26 +41,26 @@ class Parser
 
   def factor
     token = @current_token
-    if token.type == Token::PLUS
-      tokenize(Token::PLUS)
+    if token.type == :plus
+      tokenize(:plus)
       UnaryOp.new(token, factor)
-    elsif token.type == Token::MINUS
-      tokenize(Token::MINUS)
+    elsif token.type == :minus
+      tokenize(:minus)
       UnaryOp.new(token, factor)
-    elsif token.type == Token::INTEGER
-      tokenize(Token::INTEGER)
+    elsif token.type == :integer
+      tokenize(:integer)
       Num.new(token)
-    elsif token.type == Token::LPAREN
-      tokenize(Token::LPAREN)
+    elsif token.type == :left_paren
+      tokenize(:left_paren)
       node = expression
-      tokenize(Token::RPAREN)
+      tokenize(:rigth_paren)
       node
     end
   end
 
   def tokenize(token_type)
     if @current_token.type == token_type
-      @current_token = @lexer.get_next_token!
+      @current_token = @lexer.advance!
     else
       raise "Token type: #{token_type} instead of #{@current_token.type}"
     end

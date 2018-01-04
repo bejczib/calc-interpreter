@@ -5,55 +5,41 @@ class Lexer
     @pos = 0
   end
 
-  def get_next_token!
+  def advance!
     char = @text[@pos]
 
-    return Token.new(Token::EOF,nil) if (@pos > @text.length - 1)
-    case char
-    when is_digit?
-      token = Token.new(Token::INTEGER, integer)
-      return token
-    when '+'
-      token = Token.new(Token::PLUS, @text[@pos])
-      @pos += 1
-      return token
-    when '-'
-      token = Token.new(Token::MINUS, @text[@pos])
-      @pos += 1
-      return token
-    when '*'
-      token = Token.new(Token::MUL, @text[@pos])
-      @pos += 1
-      return token
-    when '/'
-      token = Token.new(Token::DIV, @text[@pos])
-      @pos += 1
-      return token
-    when '('
-      token = Token.new(Token::LPAREN, @text[@pos])
-      @pos += 1
-      return token
-    when ')'
-      token = Token.new(Token::RPAREN, @text[@pos])
-      @pos += 1
-      return token
+    return Token.new(:eof,nil) if (@pos > @text.length - 1)
+
+    if is_digit? char
+      Token.new(:integer, integer)
     else
-      puts "wtf #{char}"
+      token = Token.new(token_type_for(char), @text[@pos])
+      @pos += 1
+      return token
     end
   end
 
   private
 
+  def token_type_for(char)
+    validate! char
+    Token::CONFIG.select { |k,v| v == char }.keys.first
+  end
+
+  def validate!(char)
+    raise "Invalid type for #{char}" if Token::CONFIG.select { |k,v| v == char }.keys.empty?
+  end
+
   def integer
     digit = ''
-    while is_digit?.call(@text[@pos]) or @text[@pos] == '.'
+    while is_digit?(@text[@pos]) or @text[@pos] == '.'
       digit += @text[@pos]
       @pos +=1
     end
     digit
   end
 
-  def is_digit?
-    ->(char) { char =~ /[[:digit:]]/ }
+  def is_digit?(char)
+    char =~ /[[:digit:]]/
   end
 end
